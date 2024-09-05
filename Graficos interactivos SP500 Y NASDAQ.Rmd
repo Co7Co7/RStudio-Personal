@@ -1,0 +1,78 @@
+---
+title: "Comparación entre S&P 500 y NASDAQ"
+author: "Francisco Flor"
+date: "2024-09-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Configurar el entorno de trabajo
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introducción
+
+#### Este análisis compara los índices S&P 500 y NASDAQ utilizando datos históricos de precios de cierre ajustados, descargados de Yahoo Finance y visualizados de manera interactiva usando dygraphs.
+
+
+# Proceso
+
+
+#### Paquetes Necesarios
+
+```{r, include= FALSE}
+
+# Cargar librerías
+library(quantmod)  # Descargar series financieras
+library(dygraphs)  # Graficar series interactivas
+
+```
+
+
+
+
+
+#### Descarga de los Datos
+```{r, include=T}
+# Descargar datos de los índices
+getSymbols(c("^GSPC", "^IXIC"), src = "yahoo")
+
+# Mostrar las primeras filas del S&P 500
+head(GSPC)
+
+# Mostrar las primeras filas deL NASDAQ
+head(IXIC)
+
+```
+
+
+#### Selección de los Precios de Cierre Ajustados
+
+```{r, include=T}
+# Seleccionar solo las columnas de cierre ajustado
+sp500 <- Cl(GSPC)
+nasdaq <- Cl(IXIC)
+
+```
+
+#### Combinación de los Datos
+
+```{r, include=T}
+# Combinar los datos en un solo dataframe
+data <- merge(sp500, nasdaq)
+
+# Renombrar las columnas
+colnames(data) <- c("S&P 500", "NASDAQ")
+
+```
+
+
+
+#### Gráfico Interactivo con dygraph
+
+```{r, include=T}
+# Graficar con dygraph y añadir un selector de rango
+dygraph(data, main = "Comparación entre S&P 500 y NASDAQ") %>%
+  dyRangeSelector()
+```
+
